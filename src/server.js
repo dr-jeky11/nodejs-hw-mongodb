@@ -5,7 +5,7 @@ import env from './utils/env.js';
 
 const port = env('PORT', '3000');
 
-const setupServer = () => {
+const startServer = () => {
   const app = express();
   const logger = pino({
     transport: {
@@ -19,4 +19,4 @@ const setupServer = () => {
   app.listen(port, () => console.log(`Server running on ${port} Port`));
 };
 
-export default setupServer();
+export default startServer;
