@@ -1,47 +1,76 @@
 import express from 'express';
-import cors from 'cors';
 import pino from 'pino-http';
-import env from './utils/env.js';
-import { getAllStudents, getStudentById } from './services/students.js';
+import cors from 'cors';
+import { env } from './utils/env.js';
+import { getAllContacts, getContactById } from './services/contacts.js';
 
-const port = env('PORT', '3000');
+const PORT = Number(env('PORT', '3000'));
 
-const startServer = () => {
+const setupServer = () => {
   const app = express();
-  const logger = pino({
-    transport: {
-      target: 'pino-pretty',
-    },
-  });
 
-  app.use(logger);
   app.use(cors());
 
-  app.get('/students', async (req, res) => {
-    const students = await getAllStudents();
+  app.use(
+    pino({
+      transport: {
+        target: 'pino-pretty',
+      },
+    }),
+  );
 
+  app.get('/', (req, res) => {
     res.status(200).json({
-      data: students,
+      status: 200,
+      message: 'Home page!',
     });
   });
 
-  app.get('/students/:studentId', async (req, res, next) => {
-    const { studentId } = req.params;
-    const student = await getStudentById(studentId);
+  app.get('/contacts', async (req, res) => {
+    const contacts = await getAllContacts();
 
-    if (!student) {
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully found contacts!',
+      data: contacts,
+    });
+  });
+
+  app.get('/contacts/:contactId', async (req, res, next) => {
+    const { contactId } = req.params;
+
+    const contact = await getContactById(contactId);
+
+    if (!contact) {
       res.status(404).json({
-        message: 'Student not found',
+        message: 'Contact not found',
       });
       return;
     }
 
     res.status(200).json({
-      data: student,
+      status: 200,
+      message: 'Successfully found contacts!',
+      data: contact,
     });
   });
 
-  app.listen(port, () => console.log(`Server running on ${port} Port`));
+  app.use('*', (req, res, next) => {
+    res.status(404).json({
+      message: 'Not found',
+    });
+  });
+
+  app.use((error, req, res, next) => {
+    res.status(500).json({
+      message: 'Something went wrong',
+      error: error.message,
+    });
+  });
+
+  app.listen(PORT, () => {
+    console.log(`Server is running on PORT ${PORT}`);
+  });
 };
 
-export default startServer;
+export default setupServer;
