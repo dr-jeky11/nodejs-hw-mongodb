@@ -7,7 +7,7 @@ const env = (name, defaultValue) => {
 
   if (defaultValue) return defaultValue;
 
-  throw Error(`Missing: process.env[${name}]`);
+  throw new error(`Missing: process.env[${name}]`);
 };
 
 export default env;
