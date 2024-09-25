@@ -17,5 +17,5 @@ export const updateContact = (contactId, payload, options = {}) => {
   return contact;
 };
 
-export const deleteContactById = (contactId) =>
+export const deleteContact = (contactId) =>
   ContactsCollection.findByIdAndDelete(contactId);
