@@ -1,13 +1,13 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
 
-const env = (name, defaultValue) => {
-  const value = process.env[name];
+dotenv.config();
 
-  if (value) return value;
+export function env(value, defaultPort) {
+  const port = process.env[value];
 
-  if (defaultValue) return defaultValue;
+  if (port) return port;
 
-  throw new Error(`Missing: process.env[${name}]`);
-};
+  if (defaultPort) return defaultPort;
 
-export default env;
+  throw new Error(`Missing: process.env['${port}']`);
+}
