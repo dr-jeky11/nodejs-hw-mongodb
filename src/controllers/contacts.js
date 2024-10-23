@@ -11,6 +11,7 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 import { env } from '../utils/env.js';
 import { CLOUDINARY } from '../constants/index.js';
 
@@ -55,10 +56,21 @@ export const getContactsByIdController = async (req, res, next) => {
 };
 
 export const createContactController = async (req, res, next) => {
-  const { name, phoneNumber, contactType } = req.body;
+  const { name, phoneNumber } = req.body;
   const { _id: userId } = req.user;
+  const photo = req.file;
 
-  if ((!name, !phoneNumber, !contactType)) {
+  let photoUrl;
+
+  if (photo) {
+    if (env(CLOUDINARY.ENABLE_CLOUDINARY) === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
+
+  if ((!name, !phoneNumber)) {
     next(createHttpError(400, 'Mandatory fields are not filled'));
     return;
   }
@@ -66,6 +78,7 @@ export const createContactController = async (req, res, next) => {
   const newContact = await createContact({
     ...req.body,
     userId,
+    photo: photoUrl,
   });
 
   res.status(201).json({
