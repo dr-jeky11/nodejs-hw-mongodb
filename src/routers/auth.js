@@ -7,12 +7,15 @@ import {
   refreshUserSessionController,
   requestResetEmailController,
   resetPasswordController,
+  getGoogleOAuthUrlController,
+  loginWithGoogleController,
 } from '../controllers/auth.js';
 import {
   createLoginSchema,
   createUserSchema,
   requestResetEmailSchema,
   resetPasswordSchema,
+  loginWithGoogleOAuthSchema,
 } from '../validation/user.js';
 import { validateBody } from '../middlewares/validateBody.js';
 
@@ -22,6 +25,14 @@ authRouter.post(
   '/register',
   validateBody(createUserSchema),
   ctrlWrapper(authUserController),
+);
+
+authRouter.get('/get-oauth-url', ctrlWrapper(getGoogleOAuthUrlController));
+
+authRouter.post(
+  '/confirm-oauth',
+  validateBody(loginWithGoogleOAuthSchema),
+  ctrlWrapper(loginWithGoogleController),
 );
 
 authRouter.post(
