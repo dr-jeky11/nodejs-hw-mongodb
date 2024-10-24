@@ -5,17 +5,15 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  description: Useful app for work with contacts
-tags:
-  - name: Contacts
-    description: Operations with contacts.
-  -name: Auth
-    description: Auth operations.
+  description:
+    Efficiently manage your contacts with the PhoneBook app. Features include
+    userregistration and authentication, as well as options for adding, editing,
+    anddeleting contacts. Server-side storage ensures secure access across
+    devices.
 servers:
   - url: http://localhost:3000
-  - url: https://nodejs-hw-mongodb-k5vf.onrender.com
 paths:
-/contacts:
+  /contacts:
     get:
       $ref: ../swagger/paths/contacts/get.yaml
     post:
